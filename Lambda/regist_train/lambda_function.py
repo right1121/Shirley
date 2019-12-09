@@ -1,3 +1,5 @@
+import json
+
 import boto3
 
 from api_response import api_response
@@ -6,7 +8,8 @@ client = boto3.client('dynamodb')
 
 
 def lambda_handler(event, context):
-    main()
+    body = json.loads(event["body"])
+    return main(body)
 
 
 def main(body):
