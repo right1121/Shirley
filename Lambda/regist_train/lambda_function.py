@@ -7,6 +7,8 @@ from common import generate_id
 
 dynamodb_client = boto3.client('dynamodb')
 
+train_table_name = "train"
+
 
 def lambda_handler(event, context):
     body = json.loads(event["body"])
@@ -23,20 +25,24 @@ def main(body):
 
     id_ = generate_id()
 
-    dynamodb_client.put_item(
-        TableName="train",
-        Item={
-            "id": {"S": id_},
-            "company": {"S": company},
-            "maker": {"S": maker},
-            "series": {"S": series},
-            "cars": {"N": cars}
-        },
-        Expected={
+    item = {
+        "id": {"S": id_},
+        "company": {"S": company},
+        "maker": {"S": maker},
+        "series": {"S": series},
+        "cars": {"N": cars}
+    }
+
+    param = {
+        "TableName": train_table_name,
+        "Item": item,
+        "Expected": {
             "id": {
                 "Exists": False
             }
         }
-    )
+    }
+
+    dynamodb_client.put_item(**param)
 
     return api.format_response()
