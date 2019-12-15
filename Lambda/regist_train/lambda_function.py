@@ -3,7 +3,7 @@ import json
 import boto3
 
 from api_response import api_response
-from common import generate_id
+from common import generate_uuid
 
 dynamodb_client = boto3.client('dynamodb', endpoint_url="http://localhost:8000")
 
@@ -33,7 +33,7 @@ def main(body):
     series = body["series"]
     cars = str(body["cars"])
 
-    id_ = generate_id()
+    id_ = generate_uuid()
 
     item = {
         "id": {"S": id_},
