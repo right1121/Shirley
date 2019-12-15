@@ -24,8 +24,16 @@ export default {
       "cars": "",
     }
   },
-  method: {
+  methods: {
     putTrain() {
+      const param = {
+        'company': this.company,
+        'maker': this.maker,
+        'series': this.series,
+        'cars': this.cars
+      }
+
+      this.$api.post('/train', param)
     }
   }
 }
