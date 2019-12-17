@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import TrainNew from '../components/TrainNew.vue'
+import Exception from '../components/Exception.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/train/new',
     name: 'TrainNew',
     component: TrainNew
+  },
+  {
+    path: '/exception',
+    name: 'Exception',
+    component: Exception
   }
 ]
 
