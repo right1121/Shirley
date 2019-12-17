@@ -1,15 +1,17 @@
 <template>
   <div>
     <h1>車両追加</h1>
-    <input v-model="company" placeholder="会社名">
-    <br>
-    <input v-model="maker" placeholder="メーカー">
-    <br>
-    <input v-model="series" placeholder="形式">
-    <br>
-    <input v-model="cars" type="number" min="1" max="99" placeholder="両数">
-    <br>
-    <button @click="putTrain">登録</button>
+    <form @submit.prevent="putTrain">
+      <input v-model="company" placeholder="会社名" required>
+      <br>
+      <input v-model="maker" placeholder="メーカー" required>
+      <br>
+      <input v-model="series" placeholder="形式" required>
+      <br>
+      <input v-model="cars" type="number" min="1" max="99" placeholder="両数" required>
+      <br>
+      <button type="submit">登録</button>
+    </form>
   </div>
 
 </template>
@@ -34,6 +36,16 @@ export default {
       }
 
       this.$api.post('/train', param)
+        .then( (response) => {
+          console.log("正常", response)
+        })
+        .catch( (error) => {
+          if (error.response.status === 400){
+            console.log("statusCode")
+          } else {
+            this.$router.push('/Exception')
+          }
+        })
     }
   }
 }
