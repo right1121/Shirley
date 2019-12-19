@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import TrainNew from '../components/TrainNew.vue'
-import Exception from '../components/Exception.vue'
+import TrainNew from '../views/TrainNew.vue'
+import Exception from '../views/Exception.vue'
 
 Vue.use(VueRouter)
 
