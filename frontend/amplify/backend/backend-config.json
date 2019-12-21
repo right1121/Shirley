@@ -1,9 +1,0 @@
-{
-	"auth": {
-		"frontend01daa7ff": {
-			"service": "Cognito",
-			"providerPlugin": "awscloudformation",
-			"dependsOn": []
-		}
-	}
-}
