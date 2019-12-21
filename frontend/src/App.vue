@@ -4,9 +4,40 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/train/new">TrainNew</router-link>
     </div>
+    <amplify-sign-out v-if="signedIn"></amplify-sign-out>
     <router-view/>
   </div>
 </template>
+
+<script>
+import { AmplifyEventBus } from 'aws-amplify-vue'
+import { Auth } from 'aws-amplify'
+
+export default {
+  name: 'app',
+  components: {},
+  data() {
+    return {
+      signedIn: false
+    }
+  },
+  async beforeCreate() {
+    try {
+      await Auth.currentAuthenticatedUser()
+      this.signedIn = true
+    } catch (err) {
+      this.signedIn = false
+    }
+    AmplifyEventBus.$on('authState', info => {
+      if (info === 'signedIn') {
+        this.signedIn = true
+      } else {
+        this.signedIn = false
+      }
+    });
+  }
+}
+</script>
 
 <style>
 #app {
