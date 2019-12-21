@@ -3,6 +3,13 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import api from './api'
+import AmplifyConfig from './amplify'
+import Amplify, * as AmplifyModules from 'aws-amplify'
+import { AmplifyPlugin } from 'aws-amplify-vue'
+
+Amplify.configure(AmplifyConfig)
+
+Vue.use(AmplifyPlugin, AmplifyModules)
 
 Vue.config.productionTip = false
 

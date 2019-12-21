@@ -21,7 +21,7 @@ const routes = [
     path: '/exception',
     name: 'Exception',
     component: Exception
-  }
+  },
 ]
 
 const router = new VueRouter({
