@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { Auth } from 'aws-amplify'
+
 export default {
   data() {
     return {
@@ -29,11 +31,20 @@ export default {
   methods: {
     putTrain() {
       const param = {
+        'ownerId': "",
         'company': this.company,
         'maker': this.maker,
         'series': this.series,
         'cars': this.cars
       }
+
+      Auth.currentAuthenticatedUser()
+      .then( response => {
+        param.owner_id = response.username
+      })
+      .catch ( () => {
+        this.$router.push({path: 'exception'})
+      })
 
       this.$api.post('/train', param)
         .then( (response) => {

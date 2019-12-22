@@ -5,7 +5,7 @@ import boto3
 from api_response import api_response
 from common import generate_uuid
 
-dynamodb_client = boto3.client('dynamodb', endpoint_url="http://localhost:8000")
+dynamodb_client = boto3.client('dynamodb')
 
 train_table_name = "train"
 railway_company_table_name = "railway_company"
@@ -28,6 +28,7 @@ def main(body):
 
     verify_body_data(body)
 
+    owner_id = body["ownerId"]
     company = body["company"]
     maker = body["maker"]
     series = body["series"]
@@ -35,17 +36,18 @@ def main(body):
 
     id_ = generate_uuid()
 
-    item = {
+    items = {
         "id": {"S": id_},
         "company": {"S": company},
         "maker": {"S": maker},
         "series": {"S": series},
-        "cars": {"N": cars}
+        "cars": {"N": cars},
+        "owner_id": {"S": owner_id}
     }
 
     param = {
         "TableName": train_table_name,
-        "Item": item,
+        "Item": items,
         "Expected": {
             "id": {
                 "Exists": False
