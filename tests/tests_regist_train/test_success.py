@@ -9,6 +9,7 @@ from api_response import api_response
 @pytest.fixture
 def regist_data():
     return {
+        "ownerId": "hogehoge",
         "company": "東急",
         "maker": "KATO",
         "series": "E231",
