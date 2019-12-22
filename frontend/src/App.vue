@@ -4,7 +4,7 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/train/new">TrainNew</router-link>
     </div>
-    <amplify-sign-out v-if="signedIn"></amplify-sign-out>
+    <amplify-sign-out v-if="isSignedIn"></amplify-sign-out>
     <router-view/>
   </div>
 </template>
@@ -18,21 +18,24 @@ export default {
   components: {},
   data() {
     return {
-      signedIn: false
+      isSignedIn: false
     }
   },
   async beforeCreate() {
     try {
       await Auth.currentAuthenticatedUser()
-      this.signedIn = true
+      this.isSignedIn = true
     } catch (err) {
-      this.signedIn = false
+      this.isSignedIn = false
     }
     AmplifyEventBus.$on('authState', info => {
       if (info === 'signedIn') {
-        this.signedIn = true
+        this.isSignedIn = true
+      } else if (info === 'signedOut') {
+        this.isSignedIn = false
+        this.$router.push({ path: '/' })
       } else {
-        this.signedIn = false
+        this.isSignedIn = false
       }
     });
   }
