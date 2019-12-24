@@ -9,7 +9,7 @@ from api_response import api_response
 @pytest.fixture
 def regist_data():
     return {
-        "ownerId": "hogehoge",
+        "owner_id": "hogehoge",
         "company": "東急",
         "maker": "KATO",
         "series": "E231",
@@ -35,13 +35,20 @@ def test_insert_data(regist_data):
 def test_lambda_handler(regist_data):
     body = regist_data
     event = {
-        "body": json.dumps(body)
+        "body": json.dumps(body),
+        "requestContext": {
+            "authorizer": {
+                "claims": {
+                    "cognito:username": "pytest"
+                }
+            }
+        }
     }
     context = {}
     res = lambda_function.lambda_handler(event, context)
     body = json.loads(res["body"])
-    id_ = body.get("id")
+    train_id = body.get("train_id")
     assert res['statusCode'] == 200
     assert res['headers']['Content-Type'] == 'application/json; charset=utf-8'
     assert res['headers']['Access-Control-Allow-Origin'] == '*'
-    assert id_ is not None
+    assert train_id is not None

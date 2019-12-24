@@ -7,13 +7,14 @@ from common import generate_uuid
 
 dynamodb_client = boto3.client('dynamodb')
 
-train_table_name = "train"
+train_table_name = "depot"
 railway_company_table_name = "railway_company"
 
 
 def lambda_handler(event, context):
     try:
         body = json.loads(event["body"])
+        body["owner_id"] = event["requestContext"]["authorizer"]["claims"]["cognito:username"]
         return main(body)
     except ValueError as e:
         print("ValueError error", e)
@@ -28,7 +29,7 @@ def main(body):
 
     verify_body_data(body)
 
-    owner_id = body["ownerId"]
+    owner_id = body["owner_id"]
     company = body["company"]
     maker = body["maker"]
     series = body["series"]
@@ -37,7 +38,7 @@ def main(body):
     id_ = generate_uuid()
 
     items = {
-        "id": {"S": id_},
+        "train_id": {"S": id_},
         "company": {"S": company},
         "maker": {"S": maker},
         "series": {"S": series},
@@ -58,7 +59,7 @@ def main(body):
     dynamodb_client.put_item(**param)
 
     response.body = {
-        "id": id_
+        "train_id": id_
     }
 
     return response.format()

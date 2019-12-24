@@ -31,7 +31,6 @@ export default {
   methods: {
     putTrain() {
       const param = {
-        'ownerId': "",
         'company': this.company,
         'maker': this.maker,
         'series': this.series,
@@ -40,23 +39,30 @@ export default {
 
       Auth.currentAuthenticatedUser()
       .then( response => {
-        param.owner_id = response.username
+        
+        param.ownerId = response.username
+        const config = {
+          'headers': {
+            'Authorization': response.signInUserSession.idToken.jwtToken
+          }
+        }
+        console.log("正常", config)
+        this.$api.post('/train', param, config)
+          .then( (response) => {
+            console.log("正常", response)
+          })
+          .catch( (error) => {
+            if (error.response.status === 400){
+              console.log("statusCode")
+            } else {
+              this.$router.push('/Exception')
+            }
+          })
       })
       .catch ( () => {
         this.$router.push({path: 'exception'})
       })
 
-      this.$api.post('/train', param)
-        .then( (response) => {
-          console.log("正常", response)
-        })
-        .catch( (error) => {
-          if (error.response.status === 400){
-            console.log("statusCode")
-          } else {
-            this.$router.push('/Exception')
-          }
-        })
     }
   }
 }
