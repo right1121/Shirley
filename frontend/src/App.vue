@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <Menu/>
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/train/new">TrainNew</router-link>
@@ -12,10 +13,13 @@
 <script>
 import { AmplifyEventBus } from 'aws-amplify-vue'
 import { Auth } from 'aws-amplify'
+import Menu from './components/Menu'
 
 export default {
   name: 'app',
-  components: {},
+  components: {
+    Menu
+  },
   data() {
     return {
       isSignedIn: false
