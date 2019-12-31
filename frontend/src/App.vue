@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <Menu/>
-    <amplify-sign-out v-if="isSignedIn"></amplify-sign-out>
     <router-view/>
   </div>
 </template>
