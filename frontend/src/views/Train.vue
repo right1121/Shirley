@@ -1,13 +1,15 @@
 <template>
-  <div>
+  <v-app>
     <v-data-table
       :headers="headers"
       :items="desserts"
       :items-per-page="5"
       class="elevation-1"
+      :loading="loading"
+      loading-text="Loading... Please wait"
     ></v-data-table>
     <button @click="queryTrain">get</button>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -16,6 +18,7 @@ import { Auth } from 'aws-amplify'
   export default {
     data () {
       return {
+        loading: true,
         headers: [
           {
             text: '会社名',
@@ -37,8 +40,12 @@ import { Auth } from 'aws-amplify'
         desserts: [],
       }
     },
+    created () {
+      this.queryTrain()
+    },
     methods: {
       queryTrain() {
+        this.loading = true
         Auth.currentAuthenticatedUser()
         .then( response => {
           const config = {
@@ -46,11 +53,13 @@ import { Auth } from 'aws-amplify'
               'Authorization': response.signInUserSession.idToken.jwtToken
             }
           }
-
           return this.$api.get('/train', config)
         })
         .then( (response) => {
           this.desserts = response.data.Items
+        })
+        .finally( () => {
+          this.loading = false
         })
       }
     }
