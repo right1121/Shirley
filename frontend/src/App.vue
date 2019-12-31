@@ -1,10 +1,6 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/train/new">TrainNew</router-link>
-    </div>
-    <amplify-sign-out v-if="isSignedIn"></amplify-sign-out>
+    <v-nav/>
     <router-view/>
   </div>
 </template>
@@ -12,10 +8,13 @@
 <script>
 import { AmplifyEventBus } from 'aws-amplify-vue'
 import { Auth } from 'aws-amplify'
+import Nav from './components/Nav'
 
 export default {
   name: 'app',
-  components: {},
+  components: {
+    'v-nav': Nav
+  },
   data() {
     return {
       isSignedIn: false

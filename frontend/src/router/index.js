@@ -6,8 +6,22 @@ import Train from '../views/Train.vue'
 import Exception from '../views/Exception.vue'
 import { Auth } from 'aws-amplify'
 import { AmplifyEventBus } from 'aws-amplify-vue';
+import Store from '../store';
 
 Vue.use(VueRouter)
+
+function getUser() {
+  return Auth.currentAuthenticatedUser()
+  .then((data) => {
+    if (data.signInUserSession) {
+      Store.commit('setUser', data);
+      return data;
+    } 
+  }).catch(() => {
+    Store.commit('setUser', null);
+    return null
+  });
+}
 
 
 const routes = [
@@ -40,26 +54,23 @@ const router = new VueRouter({
 })
 
 AmplifyEventBus.$on('authState', async (state) => {
-    if (state === 'signedIn') {
-      router.push({path: '/train'})
-    }
-  });
+  if (state === 'signedIn') {
+    getUser();
+    router.push({path: '/train'});
+  } else if (state === 'signedOut') {
+    Store.commit('setUser', null);
+  }
+});
 
 router.beforeResolve(async (to, from, next) => {
   if (to.matched.some(record => record.meta.isPublic)) {
     return next()
   }
-  else {
-    Auth.currentAuthenticatedUser()
-    .then( () => {
-      return next()
-    })
-    .catch( () => {
-      return next({
-        path: '/'
-      });
-    })
+  let user = await getUser();
+  if (user) {
+    return next();
   }
+  return next({path: '/'});
 });
 
 export default router
