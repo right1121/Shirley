@@ -11,7 +11,7 @@ import { Auth } from 'aws-amplify'
 import { AmplifyEventBus } from 'aws-amplify-vue'
 
 export default {
-  name: 'menu',
+  name: 'v-nav',
   computed: {
     user() {
       return this.$store.getters.getUser;

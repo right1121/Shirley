@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Menu/>
+    <v-nav/>
     <router-view/>
   </div>
 </template>
@@ -8,12 +8,12 @@
 <script>
 import { AmplifyEventBus } from 'aws-amplify-vue'
 import { Auth } from 'aws-amplify'
-import Menu from './components/Menu'
+import Nav from './components/Nav'
 
 export default {
   name: 'app',
   components: {
-    Menu
+    'v-nav': Nav
   },
   data() {
     return {
