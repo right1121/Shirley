@@ -5,8 +5,10 @@ import TrainNew from '../views/TrainNew.vue'
 import Train from '../views/Train.vue'
 import Exception from '../views/Exception.vue'
 import { Auth } from 'aws-amplify'
+import { AmplifyEventBus } from 'aws-amplify-vue';
 
 Vue.use(VueRouter)
+
 
 const routes = [
   {
@@ -37,7 +39,13 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
+AmplifyEventBus.$on('authState', async (state) => {
+    if (state === 'signedIn') {
+      router.push({path: '/train'})
+    }
+  });
+
+router.beforeResolve(async (to, from, next) => {
   if (to.matched.some(record => record.meta.isPublic)) {
     return next()
   }
