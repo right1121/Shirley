@@ -47,10 +47,10 @@ import { Auth } from 'aws-amplify'
             }
           }
 
-          this.$api.get('/train', {}, config)
-          .then( (response) => {
-            this.desserts = response.data.Items
-          })
+          return this.$api.get('/train', config)
+        })
+        .then( (response) => {
+          this.desserts = response.data.Items
         })
       }
     }
