@@ -11,7 +11,8 @@ depot_table_name = 'depot'
 
 def lambda_handler(event, context):
     try:
-        return main()
+        user_id = find_username_from_event(event)
+        return main(user_id)
     except ValueError as e:
         print('ValueError error', e)
         return api_response.validation_error()
@@ -20,24 +21,34 @@ def lambda_handler(event, context):
         return api_response.exception_error()
 
 
-def main():
+def find_username_from_event(handler_event):
+    """lambda handlerのイベントからユーザー名を取得する
+
+    :param handler_event: lambda handlerのイベント
+    :type handler_event: dict
+    """
+    username = handler_event["requestContext"]["authorizer"]["claims"]["cognito:username"]
+    return username
+
+
+def main(user_id):
     response = api_response()
 
-    res = query_ownership_train_cars(depot_table_name)
+    res = query_ownership_train_cars(depot_table_name, user_id)
 
     response.body = res
 
     return response.format()
 
 
-def query_ownership_train_cars(table_name):
+def query_ownership_train_cars(table_name, owner_id):
     res = dynamodb_client.query(
         TableName=depot_table_name,
         KeyConditions={
             'owner_id': {
                 'ComparisonOperator': 'EQ',
                 'AttributeValueList': [
-                    {'S': 'hogehoge'}
+                    {'S': owner_id}
                 ]
             }
         }
