@@ -1,10 +1,6 @@
 <template>
   <div id="app">
     <Menu/>
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/train/new">TrainNew</router-link>
-    </div>
     <amplify-sign-out v-if="isSignedIn"></amplify-sign-out>
     <router-view/>
   </div>
