@@ -37,6 +37,9 @@ import { Auth } from 'aws-amplify'
         desserts: [],
       }
     },
+    created () {
+      this.queryTrain()
+    },
     methods: {
       queryTrain() {
         Auth.currentAuthenticatedUser()
