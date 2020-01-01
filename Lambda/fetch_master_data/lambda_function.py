@@ -23,8 +23,13 @@ def lambda_handler(event, context):
 def main():
     response = api_response()
 
+    master_data = {}
+
     for table_name in master_table_list:
-        data = fetch_master_data(table_name)
+        data_list = fetch_master_data(table_name)
+        master_data[table_name] = data_list
+
+    response.body = master_data
 
     return response.format()
 
@@ -33,8 +38,10 @@ def fetch_master_data(table_name):
     query_res_data = dynamodb_client.scan(
         TableName=table_name
     )
-    query_res_items = query_res_data['Items']
-    data = convert_query_response_items_to_dict(query_res_items)
+    items = query_res_data['Items']
+    data = convert_query_response_items_to_dict(items)
+
+    return data['Items']
 
 
 def convert_query_response_items_to_dict(query_response_items, dict_key=None):
