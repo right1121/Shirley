@@ -6,8 +6,6 @@
 </template>
 
 <script>
-import { AmplifyEventBus } from 'aws-amplify-vue'
-import { Auth } from 'aws-amplify'
 import Nav from './components/Nav'
 
 export default {
@@ -20,23 +18,7 @@ export default {
       isSignedIn: false
     }
   },
-  async beforeCreate() {
-    try {
-      await Auth.currentAuthenticatedUser()
-      this.isSignedIn = true
-    } catch (err) {
-      this.isSignedIn = false
-    }
-    AmplifyEventBus.$on('authState', info => {
-      if (info === 'signedIn') {
-        this.isSignedIn = true
-      } else if (info === 'signedOut') {
-        this.isSignedIn = false
-        this.$router.push({ path: '/' })
-      } else {
-        this.isSignedIn = false
-      }
-    });
+  beforeCreate() {
   }
 }
 </script>
