@@ -1,3 +1,4 @@
+import os
 import json
 
 from jsonschema import validate
@@ -6,7 +7,9 @@ import lambda_function
 
 
 def read_schema_file():
-    with open('./schema.json') as f:
+    path = os.path.join(os.path.dirname(__file__), './schema.json')
+
+    with open(path) as f:
         schema = json.load(f)
     return schema
 
