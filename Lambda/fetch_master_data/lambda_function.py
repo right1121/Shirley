@@ -8,6 +8,7 @@ dynamodb_client = boto3.client('dynamodb')
 
 master_table_list = [
     'model_maker',
+    'railway_company'
 ]
 
 
@@ -22,13 +23,18 @@ def lambda_handler(event, context):
 def main():
     response = api_response()
 
+    for table_name in master_table_list:
+        data = fetch_master_data(table_name)
+
+    return response.format()
+
+
+def fetch_master_data(table_name):
     query_res_data = dynamodb_client.scan(
-        TableName='model_maker'
+        TableName=table_name
     )
     query_res_items = query_res_data['Items']
     data = convert_query_response_items_to_dict(query_res_items)
-
-    return response.format()
 
 
 def convert_query_response_items_to_dict(query_response_items, dict_key=None):
