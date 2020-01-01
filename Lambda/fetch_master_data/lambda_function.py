@@ -39,9 +39,10 @@ def fetch_master_data(table_name):
         TableName=table_name
     )
     items = query_res_data['Items']
-    data = convert_query_response_items_to_dict(items)
+    dict_key = 'name'
+    data = convert_query_response_items_to_dict(items, dict_key)
 
-    return data['Items']
+    return data['KeyList']
 
 
 def convert_query_response_items_to_dict(query_response_items, dict_key=None):
