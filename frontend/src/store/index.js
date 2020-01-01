@@ -7,6 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     user: null,
+    hasMasterData: false,
     masterData: {
       modelMaker: [],
       railway_company: [],
@@ -23,10 +24,14 @@ export default new Vuex.Store({
     },
     updateMasterData(state, masterData) {
       state.masterData = masterData
+      state.hasMasterData = true
     }
   },
   actions: {
-    fetchMasterData({ commit }) {
+    fetchMasterData({ state, commit }) {
+      if (state.hasMasterData) {
+        return
+      }
       api.get('/master')
       .then( (response) => {
         commit('updateMasterData', response.data)
