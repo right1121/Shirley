@@ -28,6 +28,10 @@ export default {
       "cars": "",
     }
   },
+  created () {
+    console.log("データ")
+    this.$store.dispatch('fetchMasterData')
+  },
   methods: {
     putTrain() {
       const param = {

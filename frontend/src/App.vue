@@ -17,8 +17,6 @@ export default {
     return {
       isSignedIn: false
     }
-  },
-  beforeCreate() {
   }
 }
 </script>
