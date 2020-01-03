@@ -9,7 +9,7 @@ export default new Vuex.Store({
     user: null,
     hasMasterData: false,
     masterData: {
-      modelMaker: [],
+      model_maker: [],
       railway_company: [],
     }
   },
