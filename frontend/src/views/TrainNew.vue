@@ -1,17 +1,40 @@
 <template>
   <div>
     <h1>車両追加</h1>
-    <form @submit.prevent="putTrain">
-      <input v-model="company" placeholder="会社名" required>
-      <br>
-      <input v-model="maker" placeholder="メーカー" required>
-      <br>
-      <input v-model="series" placeholder="形式" required>
-      <br>
-      <input v-model="cars" type="number" min="1" max="99" placeholder="両数" required>
-      <br>
-      <button type="submit">登録</button>
-    </form>
+    <v-form @submit.prevent="putTrain" ref="putTrainForm">
+      <v-select
+        v-model="params.company"
+        :items="company"
+        label="会社名"
+        :rules="rules.company"
+      ></v-select>
+      <v-select
+        v-model="params.maker"
+        :items="maker"
+        label="メーカー"
+        :rules="rules.maker"
+      ></v-select>
+      <v-text-field
+        label="形式"
+        hint="例）E231"
+        v-model="params.series"
+        :rules="rules.series"
+      ></v-text-field>
+      <v-text-field
+        v-model.number="params.cars"
+        :rules="rules.cars"
+        label="両数"
+        min=1
+        max=99
+        type="number"
+      ></v-text-field>
+      <v-btn
+        block
+        depressed
+        type="submit">
+        登録
+      </v-btn>
+    </v-form>
   </div>
 
 </template>
@@ -22,32 +45,63 @@ import { Auth } from 'aws-amplify'
 export default {
   data() {
     return {
-      "company": "",
-      "maker": "",
-      "series": "",
-      "cars": "",
+      params: {
+        company: "",
+        maker: "",
+        series: "",
+        cars: "",
+      },
+      rules: {
+        company: [
+          value => !!value || '必須項目です',
+        ],
+        maker: [
+          value => !!value || '必須項目です',
+        ],
+        series: [
+          value => !!value || '必須項目です',
+        ],
+        cars: [
+          value => !!value || '必須項目です',
+          value => 1 <= value || '1以上を入力してください',
+          value => value <= 99  || '99以下を入力してください',
+          ],
+      }
+    }
+  },
+  created () {
+    this.$store.dispatch('fetchMasterData')
+  },
+  computed: {
+    company() {
+      return this.$store.state.masterData.railway_company
+    },
+    maker() {
+      return this.$store.state.masterData.model_maker
     }
   },
   methods: {
+    validate () {
+      return this.$refs.putTrainForm.validate()
+    },
+  
     putTrain() {
-      const param = {
-        'company': this.company,
-        'maker': this.maker,
-        'series': this.series,
-        'cars': this.cars
+      if (!this.validate()){
+        return false
       }
+      const params = this.params
 
       Auth.currentAuthenticatedUser()
       .then( response => {
         
-        param.ownerId = response.username
+        params.ownerId = response.username
         const config = {
           'headers': {
             'Authorization': response.signInUserSession.idToken.jwtToken
           }
         }
         console.log("正常", config)
-        this.$api.post('/train', param, config)
+        this.$api.post('/train', params, config)
           .then( (response) => {
             console.log("正常", response)
           })

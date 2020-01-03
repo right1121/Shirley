@@ -1,0 +1,17 @@
+{
+    "type" : "object",
+    "properties" : {
+        "model_maker": {
+            "type" : "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "railway_company": {
+            "type" : "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

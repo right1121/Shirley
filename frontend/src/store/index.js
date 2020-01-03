@@ -1,11 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import api from '../api'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: null
+    user: null,
+    hasMasterData: false,
+    masterData: {
+      model_maker: [],
+      railway_company: [],
+    }
   },
   getters: {
     getUser: state => {
@@ -16,8 +22,21 @@ export default new Vuex.Store({
     setUser(state, user) {
       state.user = user
     },
+    updateMasterData(state, masterData) {
+      state.masterData = masterData
+      state.hasMasterData = true
+    }
   },
   actions: {
+    fetchMasterData({ state, commit }) {
+      if (state.hasMasterData) {
+        return
+      }
+      api.get('/master')
+      .then( (response) => {
+        commit('updateMasterData', response.data)
+      })
+    }
   },
   modules: {
   }

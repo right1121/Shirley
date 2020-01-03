@@ -59,6 +59,7 @@ AmplifyEventBus.$on('authState', async (state) => {
     router.push({path: '/train'});
   } else if (state === 'signedOut') {
     Store.commit('setUser', null);
+    router.push({path: '/'});
   }
 });
 

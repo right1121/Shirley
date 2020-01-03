@@ -1,13 +1,11 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <v-nav/>
     <router-view/>
-  </div>
+  </v-app>
 </template>
 
 <script>
-import { AmplifyEventBus } from 'aws-amplify-vue'
-import { Auth } from 'aws-amplify'
 import Nav from './components/Nav'
 
 export default {
@@ -19,24 +17,6 @@ export default {
     return {
       isSignedIn: false
     }
-  },
-  async beforeCreate() {
-    try {
-      await Auth.currentAuthenticatedUser()
-      this.isSignedIn = true
-    } catch (err) {
-      this.isSignedIn = false
-    }
-    AmplifyEventBus.$on('authState', info => {
-      if (info === 'signedIn') {
-        this.isSignedIn = true
-      } else if (info === 'signedOut') {
-        this.isSignedIn = false
-        this.$router.push({ path: '/' })
-      } else {
-        this.isSignedIn = false
-      }
-    });
   }
 }
 </script>
