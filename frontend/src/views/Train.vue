@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <v-data-table
       :headers="headers"
       :items="desserts"
@@ -7,9 +7,20 @@
       class="elevation-1"
       :loading="loading"
       loading-text="Loading... Please wait"
-    ></v-data-table>
-    <button @click="queryTrain">get</button>
-  </v-app>
+    >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>所有車両</v-toolbar-title>
+
+          <v-spacer></v-spacer>
+
+          <v-toolbar-items>
+            <v-btn text>Link 1</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script>
