@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>車両追加</h1>
     <v-form @submit.prevent="putTrain" ref="putTrainForm">
       <v-select
         v-model="params.company"
@@ -35,6 +34,12 @@
         登録
       </v-btn>
     </v-form>
+    <v-btn
+      block
+      depressed
+      @click="close">
+      キャンセル
+    </v-btn>
   </div>
 
 </template>
@@ -104,6 +109,7 @@ export default {
         this.$api.post('/train', params, config)
           .then( (response) => {
             console.log("正常", response)
+            this.close()
           })
           .catch( (error) => {
             if (error.response.status === 400){
@@ -117,6 +123,10 @@ export default {
         this.$router.push({path: 'exception'})
       })
 
+    },
+
+    close() {
+      this.$emit('close');
     }
   }
 }
