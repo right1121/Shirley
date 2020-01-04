@@ -118,7 +118,13 @@ export default {
           })
           .catch( (error) => {
             if (error.response.status === 400){
-              console.log("statusCode")
+              this.$store.dispatch(
+                'pushMessage',
+                {
+                  message: '入力を確認してください',
+                  color: 'warning'
+                }
+              )
             } else {
               this.$router.push('/Exception')
             }
