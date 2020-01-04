@@ -11,6 +11,12 @@ export default new Vuex.Store({
     masterData: {
       model_maker: [],
       railway_company: [],
+    },
+    messageData: {
+      snackbar: false,
+      color: '',
+      timeout: 3500,
+      text: '',
     }
   },
   getters: {
@@ -25,6 +31,10 @@ export default new Vuex.Store({
     updateMasterData(state, masterData) {
       state.masterData = masterData
       state.hasMasterData = true
+    },
+    pushMessage (state, payload) {
+      state.messageData.text = payload.message
+      state.messageData.snackbar = true
     }
   },
   actions: {
@@ -36,7 +46,11 @@ export default new Vuex.Store({
       .then( (response) => {
         commit('updateMasterData', response.data)
       })
-    }
+    },
+
+    pushMessage ({ commit }, { message }) {
+      commit('pushMessage', { message })
+    },
   },
   modules: {
   }

@@ -107,8 +107,13 @@ export default {
         }
         console.log("正常", config)
         this.$api.post('/train', params, config)
-          .then( (response) => {
-            console.log("正常", response)
+          .then( () => {
+            this.$store.dispatch(
+              'pushMessage',
+              {
+                message: '登録しました'
+              }
+            )
             this.close()
           })
           .catch( (error) => {
