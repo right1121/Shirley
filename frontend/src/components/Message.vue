@@ -1,6 +1,7 @@
 <template>
   <v-snackbar
     v-model="snackbar"
+    :color="color"
     top
   >
     {{ text }}
@@ -19,6 +20,7 @@
     data () {
       return {
         snackbar: false,
+        color: '',
         text: 'Hello, I\'m a snackbar',
       }
     },
