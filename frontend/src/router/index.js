@@ -48,13 +48,19 @@ const router = new VueRouter({
 })
 
 AmplifyEventBus.$on('authState', async (state) => {
+  let color = 'info'
+  let message = ''
+
   if (state === 'signedIn') {
     getUser();
     router.push({path: '/train'});
+    message = 'サインインしました'
   } else if (state === 'signedOut') {
     Store.commit('setUser', null);
     router.push({path: '/'});
+    message = 'サインアウトしました'
   }
+  Store.dispatch('pushMessage', {message, color})
 });
 
 router.beforeResolve(async (to, from, next) => {
