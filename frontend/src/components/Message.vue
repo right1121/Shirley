@@ -9,7 +9,7 @@
     <v-btn
       dark
       text
-      @click="messageData.snackbar = false"
+      @click="pullMessage"
     >
       閉じる
     </v-btn>
@@ -23,5 +23,10 @@ export default {
     computed: {
       ...mapState(['messageData']),
     },
+    methods: {
+      pullMessage () {
+        this.$store.dispatch('pullMessage')
+      }
+    }
   }
   </script>
