@@ -20,9 +20,10 @@
             </template>
             <v-card>
               <v-card-title>
-                <span class="headline">車両登録</span>
+                <h2>車両追加</h2>
               </v-card-title>
               <v-card-text>
+                <v-train-form @close="dialogClose"></v-train-form>
               </v-card-text>
               <v-card-actions>
               </v-card-actions>
@@ -36,6 +37,7 @@
 
 <script>
 import { Auth } from 'aws-amplify'
+import TrainForm from '@/components/TrainForm'
 
   export default {
     data () {
@@ -63,6 +65,9 @@ import { Auth } from 'aws-amplify'
         desserts: [],
       }
     },
+    components: {
+      'v-train-form': TrainForm
+    },
     created () {
       this.queryTrain()
     },
@@ -84,6 +89,11 @@ import { Auth } from 'aws-amplify'
         .finally( () => {
           this.loading = false
         })
+      },
+
+      dialogClose() {
+        this.dialog = false
+        this.queryTrain()
       }
     }
   }
