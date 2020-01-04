@@ -1,6 +1,7 @@
 <template>
   <v-snackbar
     v-model="snackbar"
+    top
   >
     {{ text }}
   </v-snackbar>
