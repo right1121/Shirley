@@ -55,12 +55,13 @@ AmplifyEventBus.$on('authState', async (state) => {
     getUser();
     router.push({path: '/train'});
     message = 'サインインしました'
+    Store.dispatch('pushMessage', {message, color})
   } else if (state === 'signedOut') {
     Store.commit('setUser', null);
     router.push({path: '/'});
     message = 'サインアウトしました'
+    Store.dispatch('pushMessage', {message, color})
   }
-  Store.dispatch('pushMessage', {message, color})
 });
 
 router.beforeResolve(async (to, from, next) => {
