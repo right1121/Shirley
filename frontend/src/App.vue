@@ -1,5 +1,6 @@
 <template>
   <v-app id="app">
+    <v-message/>
     <v-nav/>
     <router-view/>
   </v-app>
@@ -7,11 +8,13 @@
 
 <script>
 import Nav from './components/Nav'
+import Message from './components/Message'
 
 export default {
   name: 'app',
   components: {
-    'v-nav': Nav
+    'v-nav': Nav,
+    'v-message': Message
   },
   data() {
     return {
