@@ -34,6 +34,7 @@ export default new Vuex.Store({
     },
     pushMessage (state, payload) {
       state.messageData.text = payload.message
+      state.messageData.color = payload.color
       state.messageData.snackbar = true
     }
   },
@@ -48,8 +49,8 @@ export default new Vuex.Store({
       })
     },
 
-    pushMessage ({ commit }, { message }) {
-      commit('pushMessage', { message })
+    pushMessage ({ commit }, { message, color }) {
+      commit('pushMessage', { message, color })
     },
   },
   modules: {

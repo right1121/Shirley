@@ -1,7 +1,7 @@
 <template>
   <v-snackbar
     v-model="messageData.snackbar"
-    :color="color"
+    :color="messageData.color"
     :timeout="timeout"
     top
   >
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
     computed: {
@@ -31,11 +31,5 @@ export default {
         text: 'Hello, I\'m a snackbar',
       }
     },
-    methods: {
-      ...mapActions(['pushMessage']),
-      pushMessage() {
-        this.pushMessage()
-      }
-    }
   }
   </script>

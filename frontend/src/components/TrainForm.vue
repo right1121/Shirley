@@ -105,13 +105,13 @@ export default {
             'Authorization': response.signInUserSession.idToken.jwtToken
           }
         }
-        console.log("正常", config)
         this.$api.post('/train', params, config)
           .then( () => {
             this.$store.dispatch(
               'pushMessage',
               {
-                message: '登録しました'
+                message: '登録しました',
+                color: 'success'
               }
             )
             this.close()
