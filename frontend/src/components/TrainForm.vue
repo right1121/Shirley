@@ -105,15 +105,26 @@ export default {
             'Authorization': response.signInUserSession.idToken.jwtToken
           }
         }
-        console.log("正常", config)
         this.$api.post('/train', params, config)
-          .then( (response) => {
-            console.log("正常", response)
+          .then( () => {
+            this.$store.dispatch(
+              'pushMessage',
+              {
+                message: '登録しました',
+                color: 'success'
+              }
+            )
             this.close()
           })
           .catch( (error) => {
             if (error.response.status === 400){
-              console.log("statusCode")
+              this.$store.dispatch(
+                'pushMessage',
+                {
+                  message: '入力を確認してください',
+                  color: 'warning'
+                }
+              )
             } else {
               this.$router.push('/Exception')
             }
