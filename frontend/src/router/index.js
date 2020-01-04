@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import TrainNew from '../views/TrainNew.vue'
 import Train from '../views/Train.vue'
 import Exception from '../views/Exception.vue'
 import { Auth } from 'aws-amplify'
@@ -35,11 +34,6 @@ const routes = [
     path: '/train',
     name: 'Train',
     component: Train
-  },
-  {
-    path: '/train/new',
-    name: 'TrainNew',
-    component: TrainNew
   },
   {
     path: '/exception',
