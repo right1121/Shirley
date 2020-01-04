@@ -1,7 +1,6 @@
 <template>
   <div v-if="user">
     <router-link to="/train">車両一覧</router-link> |
-    <router-link to="/train/new">車両追加</router-link> |
     <a href="#" @click="signOut">サインアウト</a>
   </div>
 </template>
