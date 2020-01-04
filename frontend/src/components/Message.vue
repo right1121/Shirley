@@ -2,6 +2,7 @@
   <v-snackbar
     v-model="snackbar"
     :color="color"
+    :timeout="timeout"
     top
   >
     {{ text }}
@@ -21,6 +22,7 @@
       return {
         snackbar: false,
         color: '',
+        timeout: 3500,
         text: 'Hello, I\'m a snackbar',
       }
     },
