@@ -2,7 +2,7 @@
   <v-snackbar
     v-model="messageData.snackbar"
     :color="messageData.color"
-    :timeout="timeout"
+    :timeout="messageData.timeout"
     top
   >
     {{ messageData.text }}
@@ -22,14 +22,6 @@ import { mapState } from 'vuex'
 export default {
     computed: {
       ...mapState(['messageData']),
-    },
-    data () {
-      return {
-        snackbar: false,
-        color: '',
-        timeout: 3500,
-        text: 'Hello, I\'m a snackbar',
-      }
     },
   }
   </script>
