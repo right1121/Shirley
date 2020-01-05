@@ -84,7 +84,8 @@ def generate_param_items(items):
     param_items = {}
     for k, v in items.items():
         data_type = convert_value_to_data_type(v)
-        param_items[k] = data_type
+        if data_type is not None:
+            param_items[k] = data_type
 
     return param_items
 
@@ -92,6 +93,9 @@ def generate_param_items(items):
 def convert_value_to_data_type(value):
     value_type = type(value)
     value_str = str(value)
+
+    if value_str == '':
+        return None
 
     if value_type is str:
         return {'S': value_str}
