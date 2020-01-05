@@ -23,8 +23,8 @@
         "train_id",
         "company",
         "maker",
-        "cars",
         "series",
+        "cars",
         "case_count"
     ]
 }

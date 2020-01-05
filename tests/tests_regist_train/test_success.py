@@ -9,18 +9,26 @@ from api_response import api_response
 
 
 @pytest.fixture
-def regist_data():
+def required_item():
     return {
         "owner_id": "hogehoge",
         "company": "東急",
         "maker": "KATO",
         "series": "E231",
         "cars": 10,
-        "part_number": "10-1246",
         "case_count": 1,
+    }
+
+
+@pytest.fixture
+def optional_item(required_item):
+    optional_item = {
+        "part_number": "10-1246",
         "lot": 2019,
         "memo": "備考",
     }
+    required_item.update(optional_item)
+    return required_item
 
 
 def read_schema_file():
@@ -31,16 +39,16 @@ def read_schema_file():
     return schema
 
 
-def test_response_setting(regist_data):
-    body = regist_data
+def test_response_setting(required_item):
+    body = required_item
     res = lambda_function.main(body)
     assert res['statusCode'] == 200
     assert res['headers']['Content-Type'] == 'application/json; charset=utf-8'
     assert res['headers']['Access-Control-Allow-Origin'] == '*'
 
 
-def test_insert_data(regist_data):
-    body = regist_data
+def test_insert_data(required_item):
+    body = required_item
     res = lambda_function.main(body)
 
     assert res['statusCode'] == 200
@@ -50,8 +58,8 @@ def test_insert_data(regist_data):
     validate(res_body, schema)
 
 
-def test_lambda_handler(regist_data):
-    body = regist_data
+def test_lambda_handler(required_item):
+    body = required_item
     event = {
         "body": json.dumps(body),
         "requestContext": {
