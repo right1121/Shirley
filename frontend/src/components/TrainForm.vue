@@ -39,6 +39,11 @@
         max=99
         type="number"
       ></v-text-field>
+      <v-text-field
+        label="ロット"
+        v-model.number="params.lot"
+        type="number"
+      ></v-text-field>
       <v-btn
         block
         depressed
@@ -68,7 +73,8 @@ export default {
         maker: "",
         series: "",
         cars: "",
-        case_count: 1
+        case_count: 1,
+        lot: null,
       },
       rules: {
         company: [
