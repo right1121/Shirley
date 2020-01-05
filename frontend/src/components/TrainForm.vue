@@ -1,6 +1,10 @@
 <template>
   <div>
     <v-form @submit.prevent="putTrain" ref="putTrainForm">
+      <v-text-field
+        v-model="params.part_number"
+        label="品番"
+      ></v-text-field>
       <v-select
         v-model="params.company"
         :items="company"
@@ -59,6 +63,7 @@ export default {
   data() {
     return {
       params: {
+        part_number: "",
         company: "",
         maker: "",
         series: "",
