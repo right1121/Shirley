@@ -1,0 +1,30 @@
+{
+    "type" : "object",
+    "properties" : {
+        "train_id": { "type": "string" },
+        "company": { "type": "string" },
+        "maker": { "type": "string" },
+        "series": { "type": "string" },
+        "cars": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99
+        },
+        "part_number": { "type": "string" },
+        "case_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 99
+        },
+        "lot": { "type": "integer" },
+        "memo": { "type": "string" }
+    },
+    "required": [
+        "train_id",
+        "company",
+        "maker",
+        "series",
+        "cars",
+        "case_count"
+    ]
+}

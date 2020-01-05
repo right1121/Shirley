@@ -1,39 +1,73 @@
 import json
+import os
 
 import pytest
+from jsonschema import validate
 
 import lambda_function
 from api_response import api_response
 
 
-@pytest.fixture
-def regist_data():
+def required_item():
     return {
         "owner_id": "hogehoge",
         "company": "東急",
         "maker": "KATO",
         "series": "E231",
-        "cars": 10
+        "cars": 10,
+        "case_count": 1,
     }
 
 
-def test_response_setting(regist_data):
-    body = regist_data
+def optional_item():
+    item = required_item()
+    optional_item = {
+        "part_number": "10-1246",
+        "lot": 2019,
+        "memo": "備考",
+    }
+    item.update(optional_item)
+    return item
+
+
+@pytest.fixture(params=["required", "optional"])
+def params_variation(request):
+    pattern = request.param
+    if pattern == "required":
+        return required_item()
+    elif pattern == "optional":
+        return optional_item()
+
+
+def read_schema_file():
+    path = os.path.join(os.path.dirname(__file__), './schema.json')
+
+    with open(path) as f:
+        schema = json.load(f)
+    return schema
+
+
+def test_response_setting(params_variation):
+    body = params_variation
     res = lambda_function.main(body)
     assert res['statusCode'] == 200
     assert res['headers']['Content-Type'] == 'application/json; charset=utf-8'
     assert res['headers']['Access-Control-Allow-Origin'] == '*'
 
 
-def test_insert_data(regist_data):
-    body = regist_data
+def test_insert_data(params_variation):
+    body = params_variation
     res = lambda_function.main(body)
 
     assert res['statusCode'] == 200
 
+    res_body = json.loads(res["body"])
+    schema = read_schema_file()
+    validate(res_body, schema)
 
-def test_lambda_handler(regist_data):
-    body = regist_data
+
+def test_lambda_handler(params_variation):
+    body = params_variation
     event = {
         "body": json.dumps(body),
         "requestContext": {

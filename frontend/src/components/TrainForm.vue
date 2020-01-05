@@ -1,6 +1,10 @@
 <template>
   <div>
     <v-form @submit.prevent="putTrain" ref="putTrainForm">
+      <v-text-field
+        v-model="params.part_number"
+        label="品番"
+      ></v-text-field>
       <v-select
         v-model="params.company"
         :items="company"
@@ -27,6 +31,23 @@
         max=99
         type="number"
       ></v-text-field>
+      <v-text-field
+        label="箱数"
+        v-model.number="params.case_count"
+        :rules="rules.case_count"
+        min=1
+        max=99
+        type="number"
+      ></v-text-field>
+      <v-text-field
+        label="ロット"
+        v-model.number="params.lot"
+        type="number"
+      ></v-text-field>
+      <v-text-field
+        label="備考"
+        v-model="params.memo"
+      ></v-text-field>
       <v-btn
         block
         depressed
@@ -51,10 +72,14 @@ export default {
   data() {
     return {
       params: {
+        part_number: "",
         company: "",
         maker: "",
         series: "",
         cars: "",
+        case_count: 1,
+        lot: undefined,
+        memo: undefined,
       },
       rules: {
         company: [
@@ -71,6 +96,11 @@ export default {
           value => 1 <= value || '1以上を入力してください',
           value => value <= 99  || '99以下を入力してください',
           ],
+        case_count: [
+          value => !!value || '必須項目です',
+          value => 1 <= value || '1以上を入力してください',
+          value => value <= 99  || '99以下を入力してください',
+        ]
       }
     }
   },

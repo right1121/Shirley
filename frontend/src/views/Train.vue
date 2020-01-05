@@ -46,6 +46,10 @@ import TrainForm from '@/components/TrainForm'
         loading: true,
         headers: [
           {
+            text: '品番',
+            value: 'part_number',
+          },
+          {
             text: '会社名',
             value: 'company',
           },
@@ -60,6 +64,18 @@ import TrainForm from '@/components/TrainForm'
           {
             text: '両数',
             value: 'cars' 
+          },
+          {
+            text: '箱数',
+            value: 'case_count' 
+          },
+          {
+            text: 'ロット',
+            value: 'lot' 
+          },
+          {
+            text: '備考',
+            value: 'memo' 
           },
         ],
         desserts: [],

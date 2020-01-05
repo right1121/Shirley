@@ -29,22 +29,8 @@ def main(body):
 
     verify_body_data(body)
 
-    owner_id = body["owner_id"]
-    company = body["company"]
-    maker = body["maker"]
-    series = body["series"]
-    cars = str(body["cars"])
-
-    id_ = generate_uuid()
-
-    items = {
-        "train_id": {"S": id_},
-        "company": {"S": company},
-        "maker": {"S": maker},
-        "series": {"S": series},
-        "cars": {"N": cars},
-        "owner_id": {"S": owner_id}
-    }
+    body["train_id"] = generate_uuid()
+    items = generate_param_items(body)
 
     param = {
         "TableName": train_table_name,
@@ -58,9 +44,7 @@ def main(body):
 
     dynamodb_client.put_item(**param)
 
-    response.body = {
-        "train_id": id_
-    }
+    response.body = body
 
     return response.format()
 
@@ -94,3 +78,28 @@ def verify_with_company_master_data(company):
 
     if len(item) == 0:
         raise ValueError
+
+
+def generate_param_items(items):
+    param_items = {}
+    for k, v in items.items():
+        data_type = convert_value_to_data_type(v)
+        if data_type is not None:
+            param_items[k] = data_type
+
+    return param_items
+
+
+def convert_value_to_data_type(value):
+    value_type = type(value)
+    value_str = str(value)
+
+    if value_str == '':
+        return None
+
+    if value_type is str:
+        return {'S': value_str}
+    if value_type in (int, float):
+        return {'N': value_str}
+    if value_type is None:
+        return {'NULL': 'True'}
