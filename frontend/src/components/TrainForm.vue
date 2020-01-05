@@ -78,8 +78,8 @@ export default {
         series: "",
         cars: "",
         case_count: 1,
-        lot: null,
-        memo: null,
+        lot: undefined,
+        memo: undefined,
       },
       rules: {
         company: [
