@@ -27,6 +27,14 @@
         max=99
         type="number"
       ></v-text-field>
+      <v-text-field
+        label="箱数"
+        v-model.number="params.case_count"
+        :rules="rules.case_count"
+        min=1
+        max=99
+        type="number"
+      ></v-text-field>
       <v-btn
         block
         depressed
@@ -55,6 +63,7 @@ export default {
         maker: "",
         series: "",
         cars: "",
+        case_count: 1
       },
       rules: {
         company: [
@@ -71,6 +80,11 @@ export default {
           value => 1 <= value || '1以上を入力してください',
           value => value <= 99  || '99以下を入力してください',
           ],
+        case_count: [
+          value => !!value || '必須項目です',
+          value => 1 <= value || '1以上を入力してください',
+          value => value <= 99  || '99以下を入力してください',
+        ]
       }
     }
   },
