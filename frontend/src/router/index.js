@@ -29,6 +29,13 @@ const routes = [
     name: 'home',
     component: Home,
     meta: { isPublic: true },
+    beforeEnter: async (to, from, next) => {
+      let user = await getUser();
+      if (user) {
+        next({path: '/train'})
+      }
+      next()
+    }
   },
   {
     path: '/train',
