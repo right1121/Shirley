@@ -44,6 +44,10 @@
         v-model.number="params.lot"
         type="number"
       ></v-text-field>
+      <v-text-field
+        label="備考"
+        v-model="params.memo"
+      ></v-text-field>
       <v-btn
         block
         depressed
@@ -75,6 +79,7 @@ export default {
         cars: "",
         case_count: 1,
         lot: null,
+        memo: null,
       },
       rules: {
         company: [
