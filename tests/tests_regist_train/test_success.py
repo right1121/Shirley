@@ -1,6 +1,8 @@
 import json
+import os
 
 import pytest
+from jsonschema import validate
 
 import lambda_function
 from api_response import api_response
@@ -13,8 +15,20 @@ def regist_data():
         "company": "東急",
         "maker": "KATO",
         "series": "E231",
-        "cars": 10
+        "cars": 10,
+        "part_number": "10-1246",
+        "case_count": 1,
+        "lot": 2019,
+        "memo": "備考",
     }
+
+
+def read_schema_file():
+    path = os.path.join(os.path.dirname(__file__), './schema.json')
+
+    with open(path) as f:
+        schema = json.load(f)
+    return schema
 
 
 def test_response_setting(regist_data):
@@ -30,6 +44,10 @@ def test_insert_data(regist_data):
     res = lambda_function.main(body)
 
     assert res['statusCode'] == 200
+
+    res_body = json.loads(res["body"])
+    schema = read_schema_file()
+    validate(res_body, schema)
 
 
 def test_lambda_handler(regist_data):
