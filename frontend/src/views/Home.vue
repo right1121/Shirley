@@ -13,7 +13,7 @@
             class="white--text"
           >
             <h1 class="white--text mb-2 display-1 text-center">大切な車両の管理サイト</h1>
-            <div class="subheading mb-4 text-center">鉄道模型管理サイト『Shirley』</div>
+            <div class="subheading mb-4 text-center">鉄道模型管理サイト『SHIRLEY DEPO』</div>
           </v-layout>
         </v-parallax>
       </section>
@@ -68,7 +68,7 @@ export default {
   name: 'home',
   data() {
     return {
-      title: 'Shirley',
+      title: 'SHIRLEY DEPO',
       authConfig: {
         signUpConfig: {
           usernameAttributes: 'ユーザー名',
