@@ -23,7 +23,11 @@
                 <h2>車両追加</h2>
               </v-card-title>
               <v-card-text>
-                <v-train-form @close="dialogClose"></v-train-form>
+                <v-train-form
+                  api-type="post"
+                  @close="dialogClose"
+                >
+                </v-train-form>
               </v-card-text>
               <v-card-actions>
               </v-card-actions>

@@ -2,29 +2,29 @@
   <div>
     <v-form @submit.prevent="putTrain" ref="putTrainForm">
       <v-text-field
-        v-model="params.part_number"
+        v-model="part_number"
         label="品番"
       ></v-text-field>
       <v-select
-        v-model="params.company"
-        :items="company"
+        v-model="company"
+        :items="companyList"
         label="会社名"
         :rules="rules.company"
       ></v-select>
       <v-select
-        v-model="params.maker"
-        :items="maker"
+        v-model="maker"
+        :items="makerList"
         label="メーカー"
         :rules="rules.maker"
       ></v-select>
       <v-text-field
         label="形式"
         hint="例）E231"
-        v-model="params.series"
+        v-model="series"
         :rules="rules.series"
       ></v-text-field>
       <v-text-field
-        v-model.number="params.cars"
+        v-model.number="cars"
         :rules="rules.cars"
         label="両数"
         min=1
@@ -33,7 +33,7 @@
       ></v-text-field>
       <v-text-field
         label="箱数"
-        v-model.number="params.case_count"
+        v-model.number="case_count"
         :rules="rules.case_count"
         min=1
         max=99
@@ -41,12 +41,12 @@
       ></v-text-field>
       <v-text-field
         label="ロット"
-        v-model.number="params.lot"
+        v-model.number="lot"
         type="number"
       ></v-text-field>
       <v-text-field
         label="備考"
-        v-model="params.memo"
+        v-model="memo"
       ></v-text-field>
       <v-btn
         block
@@ -69,18 +69,35 @@
 import { Auth } from 'aws-amplify'
 
 export default {
+  props: {
+    apiType: {},
+    part_number: {
+      default: "",
+    },
+    company: {
+      default: "",
+    },
+    maker: {
+      default: "",
+    },
+    series: {
+      default: "",
+    },
+    cars: {
+      default: "",
+    },
+    case_count: {
+      default: 1,
+    },
+    lot: {
+      default: undefined,
+    },
+    memo: {
+      default: undefined,
+    },
+  },
   data() {
     return {
-      params: {
-        part_number: "",
-        company: "",
-        maker: "",
-        series: "",
-        cars: "",
-        case_count: 1,
-        lot: undefined,
-        memo: undefined,
-      },
       rules: {
         company: [
           value => !!value || '必須項目です',
@@ -108,10 +125,10 @@ export default {
     this.$store.dispatch('fetchMasterData')
   },
   computed: {
-    company() {
+    companyList() {
       return this.$store.state.masterData.railway_company
     },
-    maker() {
+    makerList() {
       return this.$store.state.masterData.model_maker
     }
   },
