@@ -141,12 +141,21 @@ export default {
       if (!this.validate()){
         return false
       }
-      const params = this.params
 
       Auth.currentAuthenticatedUser()
       .then( response => {
         
-        params.ownerId = response.username
+        const params = {
+          part_number: this.part_number,
+          company: this.company,
+          maker: this.maker,
+          series: this.series,
+          cars: this.cars,
+          case_count: this.case_count,
+          lot: this.lot,
+          memo: this.memo,
+        }
+
         const config = {
           'headers': {
             'Authorization': response.signInUserSession.idToken.jwtToken
@@ -184,6 +193,7 @@ export default {
     },
 
     close() {
+      this.$refs.putTrainForm.resetValidation()
       this.$emit('close');
     }
   }

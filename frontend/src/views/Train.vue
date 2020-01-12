@@ -14,7 +14,7 @@
 
           <v-spacer></v-spacer>
 
-          <v-dialog v-model="dialog" max-width="600px">
+          <v-dialog v-model="dialog" max-width="600px" persistent>
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark v-on="on">車両登録</v-btn>
             </template>
@@ -24,7 +24,8 @@
               </v-card-title>
               <v-card-text>
                 <v-train-form
-                  api-type="post"
+                  :api-type="apiType"
+                  v-bind="param"
                   @close="dialogClose"
                 >
                 </v-train-form>
@@ -34,6 +35,15 @@
             </v-card>
           </v-dialog>
         </v-toolbar>
+      </template>
+      <template v-slot:item.action="{ item }">
+        <v-icon
+          small
+          class="mr-2"
+          @click="editItem(item)"
+        >
+          mdi-pencil-outline
+        </v-icon>
       </template>
     </v-data-table>
   </div>
@@ -81,8 +91,15 @@ import TrainForm from '@/components/TrainForm'
             text: '備考',
             value: 'memo' 
           },
+          { 
+            text: '操作',
+            value: 'action',
+            sortable: false 
+          },
         ],
         desserts: [],
+        param: {},
+        apiType: "post"
       }
     },
     components: {
@@ -90,6 +107,13 @@ import TrainForm from '@/components/TrainForm'
     },
     created () {
       this.queryTrain()
+      this.paramReset()
+    },
+
+    watch: {
+      dialog(val) {
+        val || this.paramReset()
+      }
     },
     methods: {
       queryTrain() {
@@ -111,7 +135,26 @@ import TrainForm from '@/components/TrainForm'
         })
       },
 
+      paramReset() {
+        this.param = {
+          part_number: "",
+          company:  "",
+          maker:  "",
+          series:  "",
+          cars:  "",
+          case_count:  1,
+          lot:  undefined,
+          memo:  undefined,
+        }
+      },
+
+      editItem(item) {
+        this.param = item
+        this.dialog = true
+      },
+
       dialogClose() {
+        this.paramReset()
         this.dialog = false
         this.queryTrain()
       }
