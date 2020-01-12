@@ -2,17 +2,17 @@
   <div>
     <v-form @submit.prevent="putTrain" ref="putTrainForm">
       <v-text-field
-        v-model="part_number"
+        v-model="params.part_number"
         label="品番"
       ></v-text-field>
       <v-select
-        v-model="company"
+        v-model="params.company"
         :items="companyList"
         label="会社名"
         :rules="rules.company"
       ></v-select>
       <v-select
-        v-model="maker"
+        v-model="params.maker"
         :items="makerList"
         label="メーカー"
         :rules="rules.maker"
@@ -20,11 +20,11 @@
       <v-text-field
         label="形式"
         hint="例）E231"
-        v-model="series"
+        v-model="params.series"
         :rules="rules.series"
       ></v-text-field>
       <v-text-field
-        v-model.number="cars"
+        v-model.number="params.cars"
         :rules="rules.cars"
         label="両数"
         min=1
@@ -33,7 +33,7 @@
       ></v-text-field>
       <v-text-field
         label="箱数"
-        v-model.number="case_count"
+        v-model.number="params.case_count"
         :rules="rules.case_count"
         min=1
         max=99
@@ -41,12 +41,12 @@
       ></v-text-field>
       <v-text-field
         label="ロット"
-        v-model.number="lot"
+        v-model.number="params.lot"
         type="number"
       ></v-text-field>
       <v-text-field
         label="備考"
-        v-model="memo"
+        v-model="params.memo"
       ></v-text-field>
       <v-btn
         block
@@ -98,6 +98,16 @@ export default {
   },
   data() {
     return {
+      params: {
+        part_number: this.part_number,
+        company: this.company,
+        maker: this.maker,
+        series: this.series,
+        cars: this.cars,
+        case_count: this.case_count,
+        lot: this.lot,
+        memo: this.memo,
+      },
       rules: {
         company: [
           value => !!value || '必須項目です',
@@ -144,29 +154,30 @@ export default {
 
       Auth.currentAuthenticatedUser()
       .then( response => {
-        
-        const params = {
-          part_number: this.part_number,
-          company: this.company,
-          maker: this.maker,
-          series: this.series,
-          cars: this.cars,
-          case_count: this.case_count,
-          lot: this.lot,
-          memo: this.memo,
-        }
 
         const config = {
           'headers': {
             'Authorization': response.signInUserSession.idToken.jwtToken
           }
         }
-        this.$api.post('/train', params, config)
+
+        let api = null
+        let actionMessage = ''
+
+        if (this.apiType === 'post') {
+          api = this.$api.post
+          actionMessage = '登録'
+        } else if (this.apiType === 'edit') {
+          api = this.$api.put
+          actionMessage = '更新'
+        }
+
+        api('/train', this.params, config)
           .then( () => {
             this.$store.dispatch(
               'pushMessage',
               {
-                message: '登録しました',
+                message: `${actionMessage}しました`,
                 color: 'success'
               }
             )

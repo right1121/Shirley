@@ -14,13 +14,18 @@
 
           <v-spacer></v-spacer>
 
+          <v-btn
+            color="primary"
+            dark
+            @click.stop="addItem"
+          >
+            車両登録
+          </v-btn>
+
           <v-dialog v-model="dialog" max-width="600px" persistent>
-            <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark v-on="on">車両登録</v-btn>
-            </template>
             <v-card>
               <v-card-title>
-                <h2>車両追加</h2>
+                <h2>車両{{ formType }}</h2>
               </v-card-title>
               <v-card-text>
                 <v-train-form
@@ -105,6 +110,15 @@ import TrainForm from '@/components/TrainForm'
     components: {
       'v-train-form': TrainForm
     },
+    computed: {
+      formType() {
+        if (this.apiType === 'post'){
+          return '登録'
+        } else {
+          return '編集'
+        }
+      }
+    },
     created () {
       this.queryTrain()
       this.paramReset()
@@ -148,7 +162,14 @@ import TrainForm from '@/components/TrainForm'
         }
       },
 
+      addItem() {
+        this.apiType = 'post'
+        this.param = this.paramReset()
+        this.dialog = true
+      },
+
       editItem(item) {
+        this.apiType = 'edit'
         this.param = item
         this.dialog = true
       },
