@@ -28,14 +28,60 @@
                 <h2>車両{{ formType }}</h2>
               </v-card-title>
               <v-card-text>
-                <v-train-form
-                  :api-type="apiType"
-                  v-bind="param"
-                  @close="dialogClose"
-                >
-                </v-train-form>
+                <v-form @submit.prevent="putTrain" ref="putTrainForm">
+                  <v-text-field
+                    v-model="param.part_number"
+                    label="品番"
+                  ></v-text-field>
+                  <v-select
+                    v-model="param.company"
+                    :items="companyList"
+                    label="会社名"
+                    :rules="rules.company"
+                  ></v-select>
+                  <v-select
+                    v-model="param.maker"
+                    :items="makerList"
+                    label="メーカー"
+                    :rules="rules.maker"
+                  ></v-select>
+                  <v-text-field
+                    v-model="param.series"
+                    label="形式"
+                    hint="例）E231"
+                    :rules="rules.series"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model.number="param.cars"
+                    :rules="rules.cars"
+                    label="両数"
+                    min=1
+                    max=99
+                    type="number"
+                  ></v-text-field>
+                  <v-text-field
+                    label="箱数"
+                    v-model.number="param.case_count"
+                    :rules="rules.case_count"
+                    min=1
+                    max=99
+                    type="number"
+                  ></v-text-field>
+                  <v-text-field
+                    label="ロット"
+                    v-model.number="param.lot"
+                    type="number"
+                  ></v-text-field>
+                  <v-text-field
+                    label="備考"
+                    v-model="param.memo"
+                  ></v-text-field>
+                </v-form>
               </v-card-text>
               <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="save">Save</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -56,7 +102,6 @@
 
 <script>
 import { Auth } from 'aws-amplify'
-import TrainForm from '@/components/TrainForm'
 
   export default {
     data () {
@@ -103,12 +148,40 @@ import TrainForm from '@/components/TrainForm'
           },
         ],
         desserts: [],
-        param: {},
+        param: {
+          train_id: "",
+          part_number: "",
+          company: "",
+          maker: "",
+          series: "",
+          cars: "",
+          case_count: 1,
+          lot: "",
+          memo: "",
+        },
+        rules: {
+          company: [
+            value => !!value || '必須項目です',
+          ],
+          maker: [
+            value => !!value || '必須項目です',
+          ],
+          series: [
+            value => !!value || '必須項目です',
+          ],
+          cars: [
+            value => !!value || '必須項目です',
+            value => 1 <= value || '1以上を入力してください',
+            value => value <= 99  || '99以下を入力してください',
+            ],
+          case_count: [
+            value => !!value || '必須項目です',
+            value => 1 <= value || '1以上を入力してください',
+            value => value <= 99  || '99以下を入力してください',
+          ]
+        },
         apiType: "post"
       }
-    },
-    components: {
-      'v-train-form': TrainForm
     },
     computed: {
       formType() {
@@ -117,9 +190,17 @@ import TrainForm from '@/components/TrainForm'
         } else {
           return '編集'
         }
+      },
+
+      companyList() {
+        return this.$store.state.masterData.railway_company
+      },
+      makerList() {
+        return this.$store.state.masterData.model_maker
       }
     },
     created () {
+      this.$store.dispatch('fetchMasterData')
       this.queryTrain()
       this.paramReset()
     },
@@ -151,22 +232,19 @@ import TrainForm from '@/components/TrainForm'
 
       paramReset() {
         this.param = {
+          train_id: "",
           part_number: "",
-          company:  "",
-          maker:  "",
-          series:  "",
-          cars:  "",
-          case_count:  1,
-          lot:  undefined,
-          memo:  undefined,
+          company: "",
+          maker: "",
+          series: "",
+          cars: "",
+          case_count: 1,
+          lot: "",
+          memo: "",
         }
       },
 
-      addItem() {
-        this.apiType = 'post'
-        this.param = this.paramReset()
-        this.dialog = true
-      },
+      save() {},
 
       editItem(item) {
         this.apiType = 'edit'
@@ -174,8 +252,9 @@ import TrainForm from '@/components/TrainForm'
         this.dialog = true
       },
 
-      dialogClose() {
+      close() {
         this.paramReset()
+        this.$refs.putTrainForm.resetValidation()
         this.dialog = false
         this.queryTrain()
       }
