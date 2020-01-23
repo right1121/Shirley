@@ -14,15 +14,10 @@
 
           <v-spacer></v-spacer>
 
-          <v-btn
-            color="primary"
-            dark
-            @click.stop="addItem"
-          >
-            車両登録
-          </v-btn>
-
           <v-dialog v-model="dialog" max-width="600px" persistent>
+            <template v-slot:activator="{ on }">
+              <v-btn color="primary" dark class="mb-2" v-on="on">車両登録</v-btn>
+            </template>
             <v-card>
               <v-card-title>
                 <h2>車両{{ formType }}</h2>
@@ -244,7 +239,15 @@ import { Auth } from 'aws-amplify'
         }
       },
 
-      save() {},
+      validate () {
+        return this.$refs.putTrainForm.validate()
+      },
+
+      save() {
+        if (!this.validate()){
+          return false
+      }
+      },
 
       editItem(item) {
         this.apiType = 'edit'
