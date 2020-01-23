@@ -12,17 +12,16 @@ depot_table = dynamodb.Table(train_table_name)
 railway_company_table = dynamodb.Table(railway_company_table_name)
 
 
-
 def lambda_handler(event, context):
     try:
         body = json.loads(event["body"])
         body["owner_id"] = event["requestContext"]["authorizer"]["claims"]["cognito:username"]
         return main(body)
     except ValueError as e:
-        print("ValueError error", e)
+        print(f"ValueError error: {e}")
         return api_response.validation_error()
     except Exception as e:
-        print("Exception error", e)
+        print(f"Exception error: {e}")
         return api_response.exception_error()
 
 
@@ -51,6 +50,8 @@ def main(body):
     }
 
     depot_table.update_item(**param)
+
+    return response.format()
 
 
 def verify_body_data(body):
