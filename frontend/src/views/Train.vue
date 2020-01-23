@@ -246,7 +246,56 @@ import { Auth } from 'aws-amplify'
       save() {
         if (!this.validate()){
           return false
-      }
+        }
+
+        Auth.currentAuthenticatedUser()
+        .then( response => {
+
+          const config = {
+            'headers': {
+              'Authorization': response.signInUserSession.idToken.jwtToken
+            }
+          }
+
+          let api = null
+          let actionMessage = ''
+
+          if (this.apiType === 'post') {
+            api = this.$api.post
+            actionMessage = '登録'
+          } else if (this.apiType === 'edit') {
+            api = this.$api.put
+            actionMessage = '更新'
+          }
+
+          api('/train', this.param, config)
+            .then( () => {
+              this.$store.dispatch(
+                'pushMessage',
+                {
+                  message: `${actionMessage}しました`,
+                  color: 'success'
+                }
+              )
+              this.close()
+            })
+            .catch( (error) => {
+              if (error.response.status === 400){
+                this.$store.dispatch(
+                  'pushMessage',
+                  {
+                    message: '入力を確認してください',
+                    color: 'warning'
+                  }
+                )
+              } else {
+                this.$router.push('/Exception')
+              }
+            })
+        })
+        .catch ( () => {
+          this.$router.push({path: 'exception'})
+        })
       },
 
       editItem(item) {
@@ -259,6 +308,7 @@ import { Auth } from 'aws-amplify'
         this.paramReset()
         this.$refs.putTrainForm.resetValidation()
         this.dialog = false
+        this.apiType = 'post'
         this.queryTrain()
       }
     }
