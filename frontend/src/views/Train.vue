@@ -14,22 +14,82 @@
 
           <v-spacer></v-spacer>
 
-          <v-dialog v-model="dialog" max-width="600px">
+          <v-dialog v-model="dialog" max-width="600px" persistent>
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark v-on="on">車両登録</v-btn>
+              <v-btn color="primary" dark class="mb-2" v-on="on">車両登録</v-btn>
             </template>
             <v-card>
               <v-card-title>
-                <h2>車両追加</h2>
+                <h2>車両{{ formType }}</h2>
               </v-card-title>
               <v-card-text>
-                <v-train-form @close="dialogClose"></v-train-form>
+                <v-form @submit.prevent="putTrain" ref="putTrainForm">
+                  <v-text-field
+                    v-model="param.part_number"
+                    label="品番"
+                  ></v-text-field>
+                  <v-select
+                    v-model="param.company"
+                    :items="companyList"
+                    label="会社名"
+                    :rules="rules.company"
+                  ></v-select>
+                  <v-select
+                    v-model="param.maker"
+                    :items="makerList"
+                    label="メーカー"
+                    :rules="rules.maker"
+                  ></v-select>
+                  <v-text-field
+                    v-model="param.series"
+                    label="形式"
+                    hint="例）E231"
+                    :rules="rules.series"
+                  ></v-text-field>
+                  <v-text-field
+                    v-model.number="param.cars"
+                    :rules="rules.cars"
+                    label="両数"
+                    min=1
+                    max=99
+                    type="number"
+                  ></v-text-field>
+                  <v-text-field
+                    label="箱数"
+                    v-model.number="param.case_count"
+                    :rules="rules.case_count"
+                    min=1
+                    max=99
+                    type="number"
+                  ></v-text-field>
+                  <v-text-field
+                    label="ロット"
+                    v-model.number="param.lot"
+                    type="number"
+                  ></v-text-field>
+                  <v-text-field
+                    label="備考"
+                    v-model="param.memo"
+                  ></v-text-field>
+                </v-form>
               </v-card-text>
               <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="save">Save</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-toolbar>
+      </template>
+      <template v-slot:item.action="{ item }">
+        <v-icon
+          small
+          class="mr-2"
+          @click="editItem(item)"
+        >
+          mdi-pencil-outline
+        </v-icon>
       </template>
     </v-data-table>
   </div>
@@ -37,7 +97,6 @@
 
 <script>
 import { Auth } from 'aws-amplify'
-import TrainForm from '@/components/TrainForm'
 
   export default {
     data () {
@@ -77,15 +136,74 @@ import TrainForm from '@/components/TrainForm'
             text: '備考',
             value: 'memo' 
           },
+          { 
+            text: '操作',
+            value: 'action',
+            sortable: false 
+          },
         ],
         desserts: [],
+        param: {
+          train_id: "",
+          part_number: "",
+          company: "",
+          maker: "",
+          series: "",
+          cars: "",
+          case_count: 1,
+          lot: "",
+          memo: "",
+        },
+        rules: {
+          company: [
+            value => !!value || '必須項目です',
+          ],
+          maker: [
+            value => !!value || '必須項目です',
+          ],
+          series: [
+            value => !!value || '必須項目です',
+          ],
+          cars: [
+            value => !!value || '必須項目です',
+            value => 1 <= value || '1以上を入力してください',
+            value => value <= 99  || '99以下を入力してください',
+            ],
+          case_count: [
+            value => !!value || '必須項目です',
+            value => 1 <= value || '1以上を入力してください',
+            value => value <= 99  || '99以下を入力してください',
+          ]
+        },
+        apiType: "post"
       }
     },
-    components: {
-      'v-train-form': TrainForm
+    computed: {
+      formType() {
+        if (this.apiType === 'post'){
+          return '登録'
+        } else {
+          return '編集'
+        }
+      },
+
+      companyList() {
+        return this.$store.state.masterData.railway_company
+      },
+      makerList() {
+        return this.$store.state.masterData.model_maker
+      }
     },
     created () {
+      this.$store.dispatch('fetchMasterData')
       this.queryTrain()
+      this.paramReset()
+    },
+
+    watch: {
+      dialog(val) {
+        val || this.paramReset()
+      }
     },
     methods: {
       queryTrain() {
@@ -107,8 +225,90 @@ import TrainForm from '@/components/TrainForm'
         })
       },
 
-      dialogClose() {
+      paramReset() {
+        this.param = {
+          train_id: "",
+          part_number: "",
+          company: "",
+          maker: "",
+          series: "",
+          cars: "",
+          case_count: 1,
+          lot: "",
+          memo: "",
+        }
+      },
+
+      validate () {
+        return this.$refs.putTrainForm.validate()
+      },
+
+      save() {
+        if (!this.validate()){
+          return false
+        }
+
+        Auth.currentAuthenticatedUser()
+        .then( response => {
+
+          const config = {
+            'headers': {
+              'Authorization': response.signInUserSession.idToken.jwtToken
+            }
+          }
+
+          let api = null
+          let actionMessage = ''
+
+          if (this.apiType === 'post') {
+            api = this.$api.post
+            actionMessage = '登録'
+          } else if (this.apiType === 'edit') {
+            api = this.$api.put
+            actionMessage = '更新'
+          }
+
+          api('/train', this.param, config)
+            .then( () => {
+              this.$store.dispatch(
+                'pushMessage',
+                {
+                  message: `${actionMessage}しました`,
+                  color: 'success'
+                }
+              )
+              this.close()
+            })
+            .catch( (error) => {
+              if (error.response.status === 400){
+                this.$store.dispatch(
+                  'pushMessage',
+                  {
+                    message: '入力を確認してください',
+                    color: 'warning'
+                  }
+                )
+              } else {
+                this.$router.push('/Exception')
+              }
+            })
+        })
+        .catch ( () => {
+          this.$router.push({path: 'exception'})
+        })
+      },
+
+      editItem(item) {
+        this.apiType = 'edit'
+        this.param = item
+        this.dialog = true
+      },
+
+      close() {
+        this.paramReset()
+        this.$refs.putTrainForm.resetValidation()
         this.dialog = false
+        this.apiType = 'post'
         this.queryTrain()
       }
     }
