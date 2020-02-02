@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "dev-serve": "vue-cli-service serve --mode development",
+    "dev-build": "vue-cli-service build --mode development",
+    "prod-serve": "vue-cli-service serve --mode production",
+    "prod-build": "vue-cli-service build --mode production"
   },
   "dependencies": {
     "aws-amplify": "^2.2.1",
